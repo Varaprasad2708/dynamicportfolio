@@ -22,7 +22,7 @@ function PortfolioView({ user }) {
     };
     fetchData();
   }, [user, navigate]);
-  
+   
 
   if (loading) return <p>Loading portfolio...</p>;
 

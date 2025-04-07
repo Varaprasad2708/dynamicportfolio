@@ -5,9 +5,11 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-d
 import PortfolioForm from "./PortfolioForm";
 import PortfolioView from "./PortfolioView";
 import './App.css';
+import { FaGoogle } from 'react-icons/fa';
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(setUser);
@@ -15,9 +17,25 @@ function App() {
   }, []);
 
   const login = async () => {
-    const result = await signInWithPopup(auth, provider);
-    setUser(result.user);
+    if (auth.currentUser || loading) return;
+    setLoading(true);
+    try {
+      await signInWithPopup(auth, provider);
+      // User state is automatically updated by onAuthStateChanged
+    } catch (err) {
+      if (err.code === "auth/cancelled-popup-request") {
+        console.warn("Popup request was cancelled.");
+      } else if (err.code === "auth/popup-closed-by-user") {
+        alert("Login popup was closed. Please try again.");
+      } else {
+        console.error("Login error:", err);
+        alert("Login failed: " + err.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   const logout = () => {
     signOut(auth);
@@ -27,10 +45,10 @@ function App() {
   return (
     <Router>
       <div className="app">
-        <h1>Dynamic Portfolio Manager</h1>
+        <h1>🚀 Dynamic Portfolio Manager</h1>
         {user ? (
           <>
-            <p>Welcome, {user.displayName}</p>
+            <p>👋 Welcome, {user.displayName}</p>
             <button onClick={logout}>Logout</button>
             <Routes>
               <Route path="/" element={<Navigate to="/portfolio" />} />
@@ -39,11 +57,13 @@ function App() {
             </Routes>
           </>
         ) : (
-          <button onClick={login}>Login with Google</button>
+          <button onClick={login} disabled={loading}>
+            {loading ? "Logging in..." : <><FaGoogle /> Login with Google</>}
+          </button>
         )}
       </div>
     </Router>
   );
 }
 
-export default App; 
+export default App;
