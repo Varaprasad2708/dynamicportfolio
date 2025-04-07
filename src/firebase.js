@@ -3,13 +3,14 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAGxvVW_9uURYwdav19xZ6rxT1T7bc8T1I",
-    authDomain: "dynamport.firebaseapp.com",
-    projectId: "dynamport",
-    storageBucket: "dynamport.firebasestorage.app",
-    messagingSenderId: "888425663754",
-    appId: "1:888425663754:web:88126d2798f5d968fb7ef3"
-};
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID
+  };
+  
 
 
 const app = initializeApp(firebaseConfig);
